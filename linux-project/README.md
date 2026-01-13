@@ -1,0 +1,1 @@
+Folder storing the linux project part of the solid-state-anemometer. This will be running on a rapsberry pi/yocto with rust handling the comms processing and a possible python layer for the gui.
