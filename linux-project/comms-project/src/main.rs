@@ -1,6 +1,5 @@
-use comms_project::{poke_mcu, say_hello};
+use comms_project::poke_mcu;
 
 fn main() {
-    say_hello();
     poke_mcu();
 }
