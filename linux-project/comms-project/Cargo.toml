@@ -5,3 +5,6 @@ edition = "2024"
 
 [dependencies]
 rppal = "0.22.1"
+
+[target.arm-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
