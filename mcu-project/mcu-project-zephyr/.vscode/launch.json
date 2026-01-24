@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Zephyr: Nucleo L476RG",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceFolder}",
+            "toolchainPrefix": "arm-zephyr-eabi",
+            "gdbPath": "/home/zach/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin/arm-zephyr-eabi-gdb",
+            "armToolchainPath": "/home/zach/zephyr-sdk-0.17.4/arm-zephyr-eabi/bin",
+            "executable": "${workspaceFolder}/build/zephyr/zephyr.elf",
+            "runToEntryPoint": "main",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32l4x.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/STM32L476.svd" 
+        }
+    ]
+}
