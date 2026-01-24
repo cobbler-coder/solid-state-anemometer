@@ -1,6 +1,7 @@
 / {
 	aliases {
 		myadcchannel = &mypotnode;
+		comms-uart = &usart1;
 	};
 
 	mypotnode: zephyr,user {
@@ -23,4 +24,10 @@
 		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
 		zephyr,resolution = <12>;
 	};
+};
+
+/* This enables USART1 on PA9/PA10 used for external comms */
+&usart1 {
+    status = "okay";
+    current-speed = <115200>;
 };
