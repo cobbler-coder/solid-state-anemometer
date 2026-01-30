@@ -9,6 +9,7 @@ pub fn create_packet(payload: &[u8]) -> Vec<u8> {
 
 /// Strips out the starting and ending bytes (0xAA and b'\n') of a message, returning
 /// the remaining data in a vector of bytes
+/// TODO: Return as a slice
 pub fn strip_packet(payload: &[u8]) -> Vec<u8> {
     let mut packet = payload.to_vec();
     packet.remove(0);
