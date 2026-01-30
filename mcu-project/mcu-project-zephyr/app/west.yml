@@ -4,12 +4,12 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
 
   projects:
-    # 1. Import the official Zephyr OS
+    # Imports the official Zephyr OS
     - name: zephyr
       remote: zephyrproject-rtos
-      revision: v4.3.0      # Pick your version (or 'main')
+      revision: v4.3.0
       import: true
-      path: zephyr          # Force it to live at the workspace root
+      path: zephyr
 
   self:
-    path: app            # The name of this folder
+    path: app
