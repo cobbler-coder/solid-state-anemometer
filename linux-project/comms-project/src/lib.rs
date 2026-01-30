@@ -10,8 +10,7 @@ use crate::comms::mock::MockComms;
 pub fn poke_mcu() -> Result<()> {
     println!("Initializing hardware");
     #[cfg(any(target_arch = "arm", target_arch = "aarch64"))]
-    let mut protocol = UartComms::new()
-        .expect("Could not initialize UART hardware");
+    let protocol = UartComms::new()?;
     
     #[cfg(not(any(target_arch = "arm", target_arch = "aarch64")))]
     let protocol = MockComms::new();

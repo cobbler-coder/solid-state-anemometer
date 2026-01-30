@@ -1,16 +1,12 @@
-use super::Communication;
-
-use anyhow::{anyhow, Context, Result};
-
 use std::io::{self, Read, Write};
 
 pub struct UartComms {
-    inner: serialport::SerialPort,
+    inner: Box<dyn serialport::SerialPort>,
 }
 
 impl UartComms {
-    pub fn new() -> Result<Self> {
-        let mut port = serialport::new("/dev/serial0", 115_200)
+    pub fn new() -> Result<Self, serialport::Error> {
+        let port = serialport::new("/dev/serial0", 115_200)
             .timeout(std::time::Duration::from_millis(100))
             .open()?;
         Ok(Self{inner: port})

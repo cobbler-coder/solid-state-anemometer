@@ -6,4 +6,4 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.100"
 [target.'cfg(any(target_arch = "arm", target_arch = "aarch64"))'.dependencies]
-serialport = "4.8.1"
+serialport = { version = "4.8.1", default-features = false }
