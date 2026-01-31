@@ -23,7 +23,6 @@ pub fn strip_packet(packet: &[u8]) -> Result<&[u8]> {
     if packet[0] != 0xAA {
         return Err(anyhow::anyhow!("Invalid Header"));
     }
-    // TODO: Make a checksum?
     if packet[packet.len() - 1] != b'\n' {
         return Err(anyhow::anyhow!("Invalid Footer"));
     }
