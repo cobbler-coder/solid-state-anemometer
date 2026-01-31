@@ -4,4 +4,3 @@ modules/
 bootloader/
 .venv/
 build/
-target/
