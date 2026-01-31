@@ -1,5 +1,7 @@
 use comms_project::poke_mcu;
+use anyhow::Result;
 
-fn main() {
-    poke_mcu();
+fn main() -> Result<()> {
+    poke_mcu()?;
+    Ok(())
 }

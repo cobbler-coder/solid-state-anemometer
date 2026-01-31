@@ -1,5 +1,5 @@
-use super::Communication;
 use std::collections::VecDeque;
+use std::io::{self, Read, Write};
 
 pub struct MockComms {
     buffer: VecDeque<Vec<u8>>,
@@ -13,16 +13,27 @@ impl MockComms {
     }
 }
 
-impl Communication for MockComms {
-    fn send_message(&mut self, data: &[u8]) -> Result<(), String> {
-        self.buffer.push_back(data.to_vec());
-        Ok(())
-    }
-
-    fn read_message(&mut self) -> Result<Vec<u8>, String> {
+impl Read for MockComms {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         match self.buffer.pop_front() {
-            Some(data) => Ok(data),
-            None=> Err("No data in buffer".to_string()),
+            Some(data) => {
+                let amount_to_copy = std::cmp::min(buf.len(), data.len());
+                buf[..amount_to_copy].copy_from_slice(&data[..amount_to_copy]);
+                Ok(amount_to_copy)
+            }
+            None => Err(io::Error::new(io::ErrorKind::WouldBlock, "No data in mock buffer")),
         }
+    }
+}
+
+impl Write for MockComms {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        self.buffer.push_back(buf.to_vec());
+        Ok(buf.len())
+    }
+    
+    fn flush(&mut self) -> io::Result<()> {
+        // NO-OP for mock
+        Ok(())
     }
 }
