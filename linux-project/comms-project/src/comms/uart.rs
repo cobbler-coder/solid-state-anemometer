@@ -1,14 +1,15 @@
 use std::io::{self, Read, Write};
+use serialport::TTYPort;
 
 pub struct UartComms {
-    inner: Box<dyn serialport::SerialPort>,
+    inner: TTYPort,
 }
 
 impl UartComms {
     pub fn new() -> Result<Self, serialport::Error> {
         let port = serialport::new("/dev/serial0", 115_200)
             .timeout(std::time::Duration::from_millis(100))
-            .open()?;
+            .open_native()?;
         Ok(Self{inner: port})
     }
 }
