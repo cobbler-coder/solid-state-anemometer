@@ -25,19 +25,20 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
         uint8_t simulated_rx[32];
         auto rx_length = 0;
 
-        while(protocol::process_incoming_bytes(simulated_rx, rx_length, rx_buffer) == 0)
+        int processed_rx_length{0};
+        while(processed_rx_length == 0)
         {
             rx_length += comms_backend->read_bytes(&simulated_rx[rx_length], 32 - rx_length);
-            printk("New rx length: %d\n", rx_length);
+            processed_rx_length = protocol::process_incoming_bytes(simulated_rx, rx_length, rx_buffer);
         }
 
-        for(auto i=0; i<rx_length; i++)
+        for(auto i=0; i<processed_rx_length; i++)
         {
             printk("Read index %d: %d; ", i, rx_buffer[i]);
         }
         printk("\n");
 
-        if(auto tx_message_length = protocol::build_packet(rx_buffer, rx_length, tx_buffer);
+        if(auto tx_message_length = protocol::build_packet(rx_buffer, processed_rx_length, tx_buffer);
             tx_message_length > 0)
         {
             comms_backend->send_packet(tx_buffer, tx_message_length);
