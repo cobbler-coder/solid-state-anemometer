@@ -1,5 +1,7 @@
 #pragma once
 
+#include <zephyr/device.h>
+
 namespace comms
 {
 

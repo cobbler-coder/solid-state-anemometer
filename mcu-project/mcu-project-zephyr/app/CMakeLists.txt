@@ -9,3 +9,5 @@ project(
     )
 
 target_sources(app PRIVATE src/main.cpp)
+
+add_subdirectory(src/comms)
