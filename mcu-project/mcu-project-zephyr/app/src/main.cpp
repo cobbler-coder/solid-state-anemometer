@@ -38,6 +38,6 @@ int main(void)
 			printk("Error: Could not toggle pin\n");
 		}
         led_state = !led_state;
-        k_msleep(1000);
+        k_msleep(10000);
     }
 }

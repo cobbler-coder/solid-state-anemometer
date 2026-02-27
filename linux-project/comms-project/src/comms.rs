@@ -21,14 +21,14 @@ impl<T: Read + Write> Communication<T> {
 
     pub fn poke_comms(&mut self) -> Result<()> {
         println!("Sending test message");
-        let test_data: [u8; 5] = [0x1, 0x2, 0x3, 0x4, 0x5];
-        let mut test_packet: [u8; 7] = [0; 7];
+        let test_data: [u8; 4] = [0x1, 0x2, 0x3, 0x4];
+        let mut test_packet: [u8; 6] = [0; 6];
         create_packet(&test_data, &mut test_packet)?;
 
         self.transport.write(&test_packet)?;
         thread::sleep(time::Duration::from_millis(500));
         println!("Reading back message");
-        let mut test_read_data: [u8; 7] = [0; 7];
+        let mut test_read_data: [u8; 6] = [0; 6];
         self.transport.read(&mut test_read_data)?;
         let read_payload = strip_packet(&test_read_data).with_context(|| "Failed to strip packet")?;
         println!("Message read: {:?}", read_payload);

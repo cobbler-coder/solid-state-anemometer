@@ -24,25 +24,26 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
     {
         uint8_t simulated_rx[32];
         auto rx_length = 0;
-        uint8_t simulated_payload[] = {0x5, 0x6, 0x7};
 
-        if(auto tx_message_length = protocol::build_packet(simulated_payload, sizeof(simulated_payload), tx_buffer);
+        while(protocol::process_incoming_bytes(simulated_rx, rx_length, rx_buffer) == 0)
+        {
+            rx_length += comms_backend->read_bytes(&simulated_rx[rx_length], 32 - rx_length);
+            printk("New rx length: %d\n", rx_length);
+        }
+
+        for(auto i=0; i<rx_length; i++)
+        {
+            printk("Read index %d: %d; ", i, rx_buffer[i]);
+        }
+        printk("\n");
+
+        if(auto tx_message_length = protocol::build_packet(rx_buffer, rx_length, tx_buffer);
             tx_message_length > 0)
         {
             comms_backend->send_packet(tx_buffer, tx_message_length);
         }
 
-        while(protocol::process_incoming_bytes(simulated_rx, rx_length, rx_buffer) == 0)
-        {
-            rx_length += comms_backend->read_bytes(&simulated_rx[rx_length], 32 - rx_length);
-        }
-
-        for(size_t i=0; i<sizeof(simulated_payload); i++)
-        {
-            printk("Read index %d: %d", i, rx_buffer[i]);
-        }
-        printk("\n");
-        k_msleep(1000);
+        k_msleep(10);
     }
 }
 

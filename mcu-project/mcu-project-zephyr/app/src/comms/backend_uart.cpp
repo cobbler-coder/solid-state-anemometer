@@ -26,7 +26,7 @@ void UartBackend::send_packet(const uint8_t* data, int length)
 
 int UartBackend::read_bytes(uint8_t* buffer, int max_length)
 {
-    //k_sem_take(&m_rx_sem, K_FOREVER);
+    k_sem_take(&m_rx_sem, K_FOREVER);
     return ring_buf_get(&m_rx_ringbuf, buffer, max_length);
 }
 
@@ -44,7 +44,7 @@ void UartBackend::handle_isr()
         if(bytes_read > 0)
         {
             ring_buf_put(&m_rx_ringbuf, hardware_fifo_buffer, bytes_read);
-            //k_sem_give(&m_rx_sem);
+            k_sem_give(&m_rx_sem);
         }
     }
 }
