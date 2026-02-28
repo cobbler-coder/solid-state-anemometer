@@ -2,29 +2,31 @@
 
 #include <string.h>
 
-int protocol::process_incoming_bytes(const uint8_t* raw_bytes_in, size_t length_in, uint8_t* raw_bytes_out)
+CommsRequestType protocol::process_incoming_bytes(const uint8_t* raw_bytes_in, size_t length_in)
 {
     // Must have at least header and checksum
     if(length_in < 2)
     {
-        return 0;
+        return CommsRequestType::Error;
     }    
     
     // Must have header
     if(raw_bytes_in[0] != 0xAA)
     {
-        return 0;
+        return CommsRequestType::Error;
     }
 
     const auto checksum = calculate_checksum(raw_bytes_in, length_in - 1);
-    if(raw_bytes_in[length_in -1] != checksum)
+    if(raw_bytes_in[length_in - 1] != checksum)
     {
-        return 0;
+        return CommsRequestType::Error;
     }
 
-    int processed_packet_length = length_in - 2;
-    memcpy(raw_bytes_out, &raw_bytes_in[1], processed_packet_length);
-    return processed_packet_length;
+    if(raw_bytes_in[1] == static_cast<uint8_t>(CommsRequestType::WindSpeed))
+    {
+        return CommsRequestType::WindSpeed;
+    }
+    return CommsRequestType::Error;
 }
 
 int protocol::build_packet(const uint8_t* raw_bytes_in, size_t length_in, uint8_t* packet_out)

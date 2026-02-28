@@ -1,5 +1,7 @@
 #pragma once
 
+#include "comms_request_type.hpp"
+
 #include <cstdint>
 #include <stddef.h>
 
@@ -7,10 +9,10 @@
 namespace protocol
 {
     /// Looks for header and checksum of incoming packet, if correct header and checksum are
-    /// present then strips header and checksum into raw_bytes_out and returns final packet length.
-    /// Returns 0 if packet failed to process.
+    /// present then determines what kind of message was requested.
+    /// Returns CommsRequestType::Error if packet failed to process.
     /// TODO: figure out way to discard data if checksum fails (need fixed packet sizes)
-    int process_incoming_bytes(const uint8_t* raw_bytes_in, size_t length_in, uint8_t* raw_bytes_out);
+    CommsRequestType process_incoming_bytes(const uint8_t* raw_bytes_in, size_t length_in);
 
     /// Adds header and checksum to a packet and copies that data into packet_out. Returns final
     /// packet size.

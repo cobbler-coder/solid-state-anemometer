@@ -34,6 +34,24 @@ impl<T: Read + Write> Communication<T> {
         println!("Message read: {:?}", read_payload);
         Ok(())
     }
+
+    // TODO: build this from message IDs and go into structures
+    pub fn request_wind_speed(&mut self) -> Result<()> {
+        println!("Requesting wind speed");
+        // Message ID 2 for wind speed (reserving ID 1 for version information)
+        let test_data: [u8; 1] = [0x2];
+        let mut test_packet: [u8; 3] = [0; 3];
+        create_packet(&test_data, &mut test_packet)?;
+
+        self.transport.write(&test_packet)?;
+        thread::sleep(time::Duration::from_millis(500));
+        println!("Reading wind speed");
+        let mut test_read_data: [u8; 6] = [0; 6];
+        self.transport.read(&mut test_read_data)?;
+        let read_payload = strip_packet(&test_read_data).with_context(|| "Failed to strip packet")?;
+        println!("Message read: {:?}", read_payload);
+        Ok(())
+    }
 }
 
 

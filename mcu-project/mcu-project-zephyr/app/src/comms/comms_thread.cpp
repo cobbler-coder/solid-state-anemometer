@@ -2,6 +2,7 @@
 #include "comms_backend.hpp"
 #include "backend_uart.hpp"
 #include "protocol.hpp"
+#include "comms_request_type.hpp"
 
 #include <zephyr/kernel.h>
 
@@ -22,23 +23,26 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
 
     while(1)
     {
-        uint8_t simulated_rx[32];
-        auto rx_length = 0;
+        size_t rx_length = 0;
 
-        int processed_rx_length{0};
-        while(processed_rx_length == 0)
+        // TODO: Comms polling system is pretty hacky right now, only can respond to one comms type
+        CommsRequestType comms_request_type{CommsRequestType::Error};
+        while(comms_request_type == CommsRequestType::Error)
         {
-            rx_length += comms_backend->read_bytes(&simulated_rx[rx_length], 32 - rx_length);
-            processed_rx_length = protocol::process_incoming_bytes(simulated_rx, rx_length, rx_buffer);
+            rx_length += comms_backend->read_bytes(&rx_buffer[rx_length], 32 - rx_length);
+            comms_request_type = protocol::process_incoming_bytes(rx_buffer, rx_length);
         }
 
-        for(auto i=0; i<processed_rx_length; i++)
+        // TODO: remove just for debug
+        for(size_t i=0; i<rx_length; i++)
         {
             printk("Read index %d: %d; ", i, rx_buffer[i]);
         }
         printk("\n");
 
-        if(auto tx_message_length = protocol::build_packet(rx_buffer, processed_rx_length, tx_buffer);
+        // Speed_H, Speed_L, Angle_H, Angle_L
+        uint8_t wind_speed_message[] = {0x10, 0x01, 0xFA, 0x00};
+        if(auto tx_message_length = protocol::build_packet(wind_speed_message, 4, tx_buffer);
             tx_message_length > 0)
         {
             comms_backend->send_packet(tx_buffer, tx_message_length);
