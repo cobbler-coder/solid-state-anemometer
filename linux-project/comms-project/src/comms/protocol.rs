@@ -16,7 +16,8 @@ pub fn create_packet(payload: &[u8], buffer: &mut [u8]) -> Result<usize> {
 }
 
 /// Strips out the starting and ending bytes (0xAA and checksum) of a message, returning
-/// the remaining data in a vector of bytes
+/// the remaining data in a vector of bytes, if the header is missing or checksum is invalid
+/// then it returns Error
 pub fn strip_packet(packet: &[u8]) -> Result<&[u8]> {
     if packet.len() < 2 {
         return Err(anyhow::anyhow!("Packet too short"));
@@ -33,6 +34,7 @@ pub fn strip_packet(packet: &[u8]) -> Result<&[u8]> {
     Ok(&packet[1..packet.len()-1])
 }
 
+/// Calculates a checksum by XORing each byte in the payload
 fn calculate_checksum(payload: &[u8]) -> u8 {
     payload.iter().fold(0, |acc, &byte| acc ^ byte)
 }

@@ -19,6 +19,7 @@ impl<T: Read + Write> Communication<T> {
         Self { transport }
     }
 
+    /// Sends a simple patterened message to the MCU and prints the result
     pub fn poke_comms(&mut self) -> Result<()> {
         println!("Sending test message");
         let test_data: [u8; 4] = [0x1, 0x2, 0x3, 0x4];
@@ -36,6 +37,7 @@ impl<T: Read + Write> Communication<T> {
     }
 
     // TODO: build this from message IDs and go into structures
+    /// Sends the wind speed packet and prints the result
     pub fn request_wind_speed(&mut self) -> Result<()> {
         println!("Requesting wind speed");
         // Message ID 2 for wind speed (reserving ID 1 for version information)
