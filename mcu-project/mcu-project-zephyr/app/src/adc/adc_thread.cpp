@@ -1,6 +1,7 @@
 #include "adc_thread.hpp"
 #include "backend_adc.hpp"
-#include "queues.hpp"
+
+#include <queues.hpp>
 
 #include <zephyr/kernel.h>
 

@@ -1,6 +1,7 @@
 #include "calculation_thread.hpp"
 #include "wind_speed_calculator.hpp"
-#include "queues.hpp"
+
+#include <queues.hpp>
 
 #include <zephyr/kernel.h>
 
@@ -18,7 +19,6 @@ void calculation::calculation_entry_point(void* p1, void* p2, void* p3)
         k_msgq_get(&raw_adc_queue, &new_adc_reading, K_FOREVER);
         latest_wind_speed = wind_speed_calculator.set_new_reading(new_adc_reading);
         k_msgq_put(&calculated_data_queue, &latest_wind_speed, K_NO_WAIT);
-        printk("Raw: %d | Averaged: %d\n", new_adc_reading, latest_wind_speed);
     }
 }
 

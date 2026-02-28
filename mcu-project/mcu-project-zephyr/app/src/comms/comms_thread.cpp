@@ -4,6 +4,8 @@
 #include "protocol.hpp"
 #include "comms_request_type.hpp"
 
+#include <queues.hpp>
+
 #include <zephyr/kernel.h>
 
 K_THREAD_STACK_DEFINE(comms_stack_area, 1024);
@@ -20,6 +22,8 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
     // TODO: these probably shouldn't exist, here for debug, instead poll rx for specific commands
     uint8_t tx_buffer[32];
     uint8_t rx_buffer[32];
+
+    uint16_t latest_wind_speed{};
 
     while(1)
     {
@@ -40,15 +44,22 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
         }
         printk("\n");
 
+        // Drain the queue to get the latest
+        uint16_t temp_wind_speed;
+        while (k_msgq_get(&calculated_data_queue, &temp_wind_speed, K_NO_WAIT) == 0)
+        {
+            latest_wind_speed = temp_wind_speed; 
+        }
+
         // Speed_H, Speed_L, Angle_H, Angle_L
-        uint8_t wind_speed_message[] = {0x10, 0x01, 0xFA, 0x00};
+        uint8_t wind_speed_message[] = {(latest_wind_speed >> 8) & 0xFF, 
+                                        latest_wind_speed & 0xFF, 
+                                        0x00, 0x00};
         if(auto tx_message_length = protocol::build_packet(wind_speed_message, 4, tx_buffer);
             tx_message_length > 0)
         {
             comms_backend->send_packet(tx_buffer, tx_message_length);
         }
-
-        k_msleep(10);
     }
 }
 
