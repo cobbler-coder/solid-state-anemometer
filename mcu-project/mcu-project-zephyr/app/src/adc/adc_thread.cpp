@@ -23,9 +23,10 @@ void adc::adc_entry_point(void* p1, void* p2, void* p3)
 
 void adc::adc_thread_init(const struct adc_dt_spec* adc_device)
 {
+    // Initialize the ADC reading thread at priority 5 (high)
     k_thread_create(&adc_thread_data, adc_stack_area,
                     K_THREAD_STACK_SIZEOF(adc_stack_area),
                     adc_entry_point,
                     (void*)adc_device, NULL, NULL,
-                    6, 0, K_NO_WAIT);
+                    5, 0, K_NO_WAIT);
 }

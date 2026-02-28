@@ -17,6 +17,7 @@ ZTEST(comms_suite, test_checksum_calc)
     zassert_equal(checksum, 0x1 ^ 0x3);
 }
 
+// TODO: Need to update these tests to match enumeration return type
 ZTEST(comms_suite, test_packet_happy_path)
 {
     uint8_t packet[] = { 0xAA, 0x04, 0x00, 0x15, 0x01, 0x0E, 0x00 };

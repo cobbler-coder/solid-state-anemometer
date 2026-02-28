@@ -24,9 +24,10 @@ void calculation::calculation_entry_point(void* p1, void* p2, void* p3)
 
 void calculation::calculation_thread_init()
 {
+    // Initialize the ADC reading thread at priority 6 (medium)
     k_thread_create(&calculation_thread_data, calculation_stack_area,
                     K_THREAD_STACK_SIZEOF(calculation_stack_area),
                     calculation_entry_point,
                     NULL, NULL, NULL,
-                    5, 0, K_NO_WAIT);
+                    6, 0, K_NO_WAIT);
 }

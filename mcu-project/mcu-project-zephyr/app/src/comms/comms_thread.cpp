@@ -51,6 +51,7 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
             latest_wind_speed = temp_wind_speed; 
         }
 
+        // TODO: This should sit in a struct
         // Speed_H, Speed_L, Angle_H, Angle_L
         uint8_t wind_speed_message[] = {(latest_wind_speed >> 8) & 0xFF, 
                                         latest_wind_speed & 0xFF, 
@@ -65,6 +66,7 @@ void comms::comms_entry_point(void* p1, void* p2, void* p3)
 
 void comms::comms_thread_init(const struct device* uart_device)
 {
+    // Initialize the ADC reading thread at priority 7 (medium)
     k_thread_create(&comms_thread_data, comms_stack_area,
                     K_THREAD_STACK_SIZEOF(comms_stack_area),
                     comms_entry_point,

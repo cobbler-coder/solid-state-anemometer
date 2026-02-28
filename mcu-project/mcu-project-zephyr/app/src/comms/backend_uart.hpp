@@ -9,15 +9,23 @@
 class UartBackend : public ICommsBackend
 {
 public:
+    /// @brief Constructs the UartBackend object that handles comms to and from a Uart port
+    /// @param adc_device the physical uart_device to read from
     UartBackend(const struct device* uart_device);
 
+    /// @brief Initializes the hardware, done after the constructor to control timing
     void init() override;
 
+    /// @brief Sends a packet of data over uart. This is currently a blocking/polling call
     void send_packet(const uint8_t* data, int length) override;
 
+    /// @brief Gets the latest data read from the UART port. This will block until a byte is received
+    /// @return the number of bytes read
     int read_bytes(uint8_t* buffer, int max_length) override;
 
 private:
+    /// ISR functions to handle the actual reading of the UART port, before storing and getting accessed
+    /// by the read_bytes function
     static void uart_isr_wrapper(const struct device* dev, void* user_data);
     void handle_isr();
 
