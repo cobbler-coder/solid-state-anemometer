@@ -14,4 +14,4 @@ target_sources(app PRIVATE src/main.cpp)
 
 add_subdirectory(src/comms)
 add_subdirectory(src/adc)
-#add_subdirectory(src/calculations)
+add_subdirectory(src/calculations)

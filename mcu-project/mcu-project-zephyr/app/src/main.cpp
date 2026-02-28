@@ -1,5 +1,6 @@
 #include <comms_thread.hpp>
 #include <adc_thread.hpp>
+#include <calculation_thread.hpp>
 
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/uart.h>
@@ -14,9 +15,9 @@ const struct device* external_uart = DEVICE_DT_GET(COMMS_UART);
 static const struct adc_dt_spec potentiometer = ADC_DT_SPEC_GET(DT_PATH(zephyr_user));
 
 // Message queue setup between threads
-// (10 items, 2 bytes each, aligned to 4-byte boundaries)
-K_MSGQ_DEFINE(raw_adc_queue, sizeof(uint16_t), 10, 4);
-K_MSGQ_DEFINE(calculated_data_queue, sizeof(uint16_t), 10, 4);
+// (10 items, 2 bytes each, aligned to 2-byte boundaries)
+K_MSGQ_DEFINE(raw_adc_queue, sizeof(uint16_t), 10, 2);
+K_MSGQ_DEFINE(calculated_data_queue, sizeof(uint16_t), 10, 2);
 
 int main(void)
 {
@@ -42,6 +43,7 @@ int main(void)
 	
 	comms::comms_thread_init(external_uart);
 	adc::adc_thread_init(&potentiometer);
+	calculation::calculation_thread_init();
 
     bool led_state = false;
     while(1)
